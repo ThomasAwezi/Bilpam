@@ -1,30 +1,31 @@
-document.getElementById('year')?.textContent = new Date().getFullYear();
+// small enhancements
+document.getElementById('year').textContent = new Date().getFullYear();
 
-// Simple Formspree AJAX handler (unobtrusive — replace action with your endpoint)
+// simple AJAX contact feedback (Formspree will redirect by default; this intercepts)
 const form = document.getElementById('contactForm');
-if(form){
+if (form) {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const fd = new FormData(form);
-    const msg = document.getElementById('formMessage');
-    try{
-      const res = await fetch(form.action, {
+    const formData = new FormData(form);
+    const respDiv = document.getElementById('formMessage');
+    try {
+      const resp = await fetch(form.action, {
         method: 'POST',
-        body: fd,
+        body: formData,
         headers: { 'Accept': 'application/json' }
       });
-      if(res.ok){
-        msg.style.display = 'block';
-        msg.className = 'alert alert-success';
-        msg.textContent = 'Thanks — your message was sent.';
+      if (resp.ok) {
+        respDiv.style.display = 'block';
+        respDiv.className = 'alert alert-success';
+        respDiv.textContent = 'Thanks — your message was sent!';
         form.reset();
       } else {
-        throw new Error('Network error');
+        throw new Error('Network response was not ok');
       }
-    } catch(err){
-      msg.style.display = 'block';
-      msg.className = 'alert alert-danger';
-      msg.textContent = 'There was an error sending your message. Please email us directly.';
+    } catch (err) {
+      respDiv.style.display = 'block';
+      respDiv.className = 'alert alert-danger';
+      respDiv.textContent = 'There was an error sending the message. Try emailing directly.';
     }
   });
 }
